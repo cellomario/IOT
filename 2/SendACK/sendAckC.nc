@@ -61,12 +61,12 @@ module sendAckC {
 	  message -> msg_counter = count;
 	  message -> value=0;
 	  dbg("radio_send","message assembled ready to be transmitted\n");
-//	  if(PackAck.requestAck(message_t *message)==SUCCESS){
+	  if(call PackAck.requestAck(&packet)==SUCCESS){
 //	  	dbg("radio_send","enabled acknowledgement for transmission\n");
-//	  	if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
-//	  		dbg("radio_sent","packet sent\n");
-//	  	}
-//	  }
+	  		if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
+	  			dbg("radio_sent","packet sent\n");
+	  		}
+	  }
  }        
 
   //****************** Task send response *****************//
