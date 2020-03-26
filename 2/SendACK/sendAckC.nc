@@ -14,6 +14,12 @@ module sendAckC {
   uses {
   /****** INTERFACES *****/
 	interface Boot; 
+	//timer
+	interface Timer<Tmilli> as MilliTimer;
+	//radio
+	interface SplitControl;
+	interface AMSend;
+	interface Packet;
 	
     //interfaces for communication
 	//interface for timer
@@ -34,7 +40,7 @@ module sendAckC {
   
   
   //***************** Send request function ********************//
-  void sendReq() {
+  void sendReq(uint16_t count) {
 	/* This function is called when we want to send a request
 	 *
 	 * STEPS:
@@ -44,6 +50,20 @@ module sendAckC {
 	 * 3. Send an UNICAST message to the correct node
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 my_msg_t* message=(my_msg_t*)(call Packet.getPayload(&packet, sizeof(my_msg_t)));
+	 if (mess == NULL) {
+		return;
+	  }
+	  message -> msg_type = REQ;
+	  message -> msg_counter = count;
+	  message -> value=0;
+	  dbg("radio_send","message assembled ready to be transmitted\n");
+	  if(AMSend.requestAck(message_t *message)==SUCCESS){
+	  	dbg("radio_send","enabled acknowledgement for transmission\n");
+	  	if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
+	  		dbg("radio_sent","packet sent\n");
+	  	}
+	  }
  }        
 
   //****************** Task send response *****************//
@@ -59,12 +79,26 @@ module sendAckC {
   //***************** Boot interface ********************//
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
+	call SplitControl.start();
+	if(TOS_NODE_ID==1){
+		call MilliTimer.startPeriodic(1000);
+		dbg("boot""started timer  at 1 Hz on mote 1\n");
+	}
 	/* Fill it ... */
   }
 
   //***************** SplitControl interface ********************//
   event void SplitControl.startDone(error_t err){
-    /* Fill it ... */
+ 	if (err == SUCCESS) {
+ 		dbg("radio","radio on"
+		if(TOS_NODE_ID==1){
+			call MilliTimer.startPeriodic(1000);
+			dbg("boot""started timer  at 1 Hz on mote 1\n");
+		}
+    }
+    else {
+      call SplitControl.start();
+    }
   }
   
   event void SplitControl.stopDone(error_t err){
@@ -77,6 +111,9 @@ module sendAckC {
 	 * When the timer fires, we send a request
 	 * Fill this part...
 	 */
+	 counter++;
+	 dbg("radio_send","incremented counter by 1, counter value %d\n",counter);
+	 sendReq(counter);
   }
   
 
