@@ -15,11 +15,14 @@ module sendAckC {
   /****** INTERFACES *****/
 	interface Boot; 
 	//timer
-	interface Timer<Tmilli> as MilliTimer;
+	interface Timer<TMilli> as MilliTimer;
 	//radio
 	interface SplitControl;
 	interface AMSend;
 	interface Packet;
+	interface PacketAcknowledgements as PackAck;
+	interface AMReceive;
+
 	
     //interfaces for communication
 	//interface for timer
@@ -35,12 +38,12 @@ module sendAckC {
   uint8_t rec_id;
   message_t packet;
 
-  void sendReq();
-  void sendResp();
+//  void sendReq();
+//  void sendResp();
   
   
   //***************** Send request function ********************//
-  void sendReq(uint16_t count) {
+  void sendReq(uint8_t count) {
 	/* This function is called when we want to send a request
 	 *
 	 * STEPS:
@@ -51,19 +54,19 @@ module sendAckC {
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
 	 my_msg_t* message=(my_msg_t*)(call Packet.getPayload(&packet, sizeof(my_msg_t)));
-	 if (mess == NULL) {
+	 if (message == NULL) {
 		return;
 	  }
 	  message -> msg_type = REQ;
 	  message -> msg_counter = count;
 	  message -> value=0;
 	  dbg("radio_send","message assembled ready to be transmitted\n");
-	  if(AMSend.requestAck(message_t *message)==SUCCESS){
-	  	dbg("radio_send","enabled acknowledgement for transmission\n");
-	  	if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
-	  		dbg("radio_sent","packet sent\n");
-	  	}
-	  }
+//	  if(PackAck.requestAck(message_t *message)==SUCCESS){
+//	  	dbg("radio_send","enabled acknowledgement for transmission\n");
+//	  	if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
+//	  		dbg("radio_sent","packet sent\n");
+//	  	}
+//	  }
  }        
 
   //****************** Task send response *****************//
@@ -82,7 +85,7 @@ module sendAckC {
 	call SplitControl.start();
 	if(TOS_NODE_ID==1){
 		call MilliTimer.startPeriodic(1000);
-		dbg("boot""started timer  at 1 Hz on mote 1\n");
+		dbg("boot","started timer  at 1 Hz on mote 1\n");
 	}
 	/* Fill it ... */
   }
@@ -90,10 +93,10 @@ module sendAckC {
   //***************** SplitControl interface ********************//
   event void SplitControl.startDone(error_t err){
  	if (err == SUCCESS) {
- 		dbg("radio","radio on"
+ 		dbg("radio","radio on");
 		if(TOS_NODE_ID==1){
 			call MilliTimer.startPeriodic(1000);
-			dbg("boot""started timer  at 1 Hz on mote 1\n");
+			dbg("boot","started timer  at 1 Hz on mote 1\n");
 		}
     }
     else {

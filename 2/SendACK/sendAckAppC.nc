@@ -18,6 +18,7 @@ implementation {
   components new AMSenderC(AM_MY_MSG);
   components new AMReceiverC(AM_MY_MSG);
   components new TimerMilliC();
+  components new PacketAcknowldegements();
   components ActiveMessageC; /*Contains Packet, PacketAcknowledgments and SplitControl*/
   components new FakeSensorC(); /*This component is defined in the same folder, not to be modified*/
 
@@ -35,7 +36,8 @@ implementation {
 
   //Interfaces to access package fields
   App.Packet -> AMSenderC;
-  App.PacketAcknowledgements -> AMSenderC;
+  App.PackACk -> PacketAcknowledgements;
+
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;
