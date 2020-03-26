@@ -21,7 +21,7 @@ module sendAckC {
 	interface AMSend;
 	interface Packet;
 	interface PacketAcknowledgements as PackAck;
-	interface AMReceive;
+	interface Receive;
 
 	
     //interfaces for communication
@@ -38,8 +38,8 @@ module sendAckC {
   uint8_t rec_id;
   message_t packet;
 
-//  void sendReq();
-//  void sendResp();
+  void sendReq(uint8_t count);
+  void sendResp();
   
   
   //***************** Send request function ********************//
@@ -155,6 +155,6 @@ module sendAckC {
 	 * 2. Send back (with a unicast message) the response
 	 * X. Use debug statement showing what's happening (i.e. message fields)
 	 */
-
 }
 
+}
