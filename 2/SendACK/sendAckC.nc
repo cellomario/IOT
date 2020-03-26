@@ -62,9 +62,16 @@ module sendAckC {
 	  message -> value=0;
 	  dbg("radio_send","message assembled ready to be transmitted\n");
 	  if(call PackAck.requestAck(&packet)==SUCCESS){
-//	  	dbg("radio_send","enabled acknowledgement for transmission\n");
+	  	dbg("radio_send","enabled acknowledgement for transmission\n");
 	  		if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
-	  			dbg("radio_sent","packet sent\n");
+	  			dbg("radio_send","packet sent successfyully\n");
+	  			if (call PackAck.wasAcked(&packet)==TRUE){
+	  				dbg("radio_ack","packet was acknowledged");
+	  				call MilliTimer.stop();
+	  				dbg("boot","timer was stopped");
+	  				
+	  			}
+	  			
 	  		}
 	  }
  }        
