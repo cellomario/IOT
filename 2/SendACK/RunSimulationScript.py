@@ -38,7 +38,7 @@ out = sys.stdout;
 #Add debug channel
 print "Activate debug message on channel init"
 t.addChannel("init",out);
-print "Activate debug message on channel boot"
+print "Activate debug message on channel boot"	
 t.addChannel("boot",out);
 print "Activate debug message on channel radio"
 t.addChannel("radio",out);

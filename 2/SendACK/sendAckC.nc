@@ -65,12 +65,7 @@ module sendAckC {
 	  	dbg("radio_send","enabled acknowledgement for transmission\n");
 	  		if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
 	  			dbg("radio_send","packet sent successfyully\n");
-	  			if (call PackAck.wasAcked(&packet)==TRUE){
-	  				dbg("radio_ack","packet was acknowledged");
-	  				call MilliTimer.stop();
-	  				dbg("boot","timer was stopped");
-	  				
-	  			}
+	  			
 	  			
 	  		}
 	  }
@@ -138,6 +133,12 @@ module sendAckC {
 	 * 2b. Otherwise, send again the request
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 if (call PackAck.wasAcked(&packet)==TRUE){
+		dbg("radio_ack","packet was acknowledged");
+		call MilliTimer.stop();
+		dbg("boot","timer was stopped");
+	  				
+	}
   }
 
   //***************************** Receive interface *****************//
