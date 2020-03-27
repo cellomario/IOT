@@ -84,6 +84,8 @@ module sendAckC {
   	 * When the reading is done it raise the event read one.
   	 */
 	call Read.read();
+
+	
   }
 
   //***************** Boot interface ********************//
@@ -154,7 +156,7 @@ module sendAckC {
 	 if (call PackAck.wasAcked(&packet)==TRUE){
 		dbg("radio_ack","packet was acknowledged\n");
 		call MilliTimer.stop();
-		dbg("boot","timer was stopped");
+		dbg("boot","timer was stopped\n");
 	  				
 	}
 	else{
@@ -175,6 +177,28 @@ module sendAckC {
 	 * 3. If a request is received, send the response
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 if(len!=sizeof(my_msg_t)){
+	 	dbgerror("radio","received packet with unexpected length\n");
+	 	return buf;
+	 }
+	 else{
+	 	my_msg_t* message=(my_msg_t*)payload;
+	 	dbg("radio_rec", "Received packet at time %s\n", sim_time_string());
+      	dbg("radio_pack"," Payload length %hhu \n", call Packet.payloadLength(buf));
+      	dbg("radio_pack", ">>>Packet content: \n");
+      	dbg_clear("radio_pack","\t\t Payload Received\n" );
+      	dbg_clear("radio_pack", "\t\t type: %hhu \n ", message->msg_type);
+ 		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message->msg_counter);
+ 		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message->value);
+ 		if(message->msg_type==REQ){
+ 			dbg("radio_rec","received REQ message, reading sensr\n");
+ 			counter=message->msg_counter;
+			call Packet.clear(payload);
+ 			sendResp();
+
+ 		}
+	 	return message;
+	 }
 
   }
   
@@ -186,7 +210,15 @@ module sendAckC {
 	 * 1. Prepare the response (RESP)
 	 * 2. Send back (with a unicast message) the response
 	 * X. Use debug statement showing what's happening (i.e. message fields)
-	 */
-}
+	 */ 
+	 if(result==SUCCESS){
+	 		dbg("radio_rec","Sensor read correctly, preparing response\n");}
+ 		else{
+ 			dbgerror("radio_rec","trouble reading sensor\n");
+ 			return;}
+//		 my_msg_t* message=(my_msg_t*)(call Packet.getPayload(&packet, sizeof(my_msg_t)));
+
+
+	}
 
 }
