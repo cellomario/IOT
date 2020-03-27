@@ -35,7 +35,12 @@ implementation {
 
   //Interfaces to access package fields
   App.Packet -> AMSenderC;
+<<<<<<< HEAD
   App.PacketAcknowledgements -> ActiveMessageC;
+=======
+  App.PackAck -> AMSenderC;
+
+>>>>>>> 400a627d258f6f9188e5ea1ae3e84eb26bf083f3
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;

@@ -15,11 +15,14 @@ module sendAckC {
   /****** INTERFACES *****/
 	interface Boot; 
 	//timer
-	interface Timer<Tmilli> as MilliTimer;
+	interface Timer<TMilli> as MilliTimer;
 	//radio
 	interface SplitControl;
 	interface AMSend;
 	interface Packet;
+	interface PacketAcknowledgements as PackAck;
+	interface Receive;
+
 	
     //interfaces for communication
 	//interface for timer
@@ -35,12 +38,12 @@ module sendAckC {
   uint8_t rec_id;
   message_t packet;
 
-  void sendReq();
+  void sendReq(uint8_t count);
   void sendResp();
   
   
   //***************** Send request function ********************//
-  void sendReq(uint16_t count) {
+  void sendReq(uint8_t count) {
 	/* This function is called when we want to send a request
 	 *
 	 * STEPS:
@@ -51,18 +54,25 @@ module sendAckC {
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
 	 my_msg_t* message=(my_msg_t*)(call Packet.getPayload(&packet, sizeof(my_msg_t)));
-	 if (mess == NULL) {
+	 if (message == NULL) {
 		return;
 	  }
 	  message -> msg_type = REQ;
 	  message -> msg_counter = count;
 	  message -> value=0;
 	  dbg("radio_send","message assembled ready to be transmitted\n");
-	  if(AMSend.requestAck(message_t *message)==SUCCESS){
+	  if(call PackAck.requestAck(&packet)==SUCCESS){
 	  	dbg("radio_send","enabled acknowledgement for transmission\n");
-	  	if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
-	  		dbg("radio_sent","packet sent\n");
-	  	}
+	  		if (call AMSend.send(rec_id, &packet,sizeof(my_msg_t))==SUCCESS){
+				dbg("radio_send", "Packet with destination node %d passed to lower layer successfully!\n",rec_id);
+	     		dbg("radio_pack","Packet Sent!\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+	     		dbg_clear("radio_pack","\t Payload Sent\n" );
+		 		dbg_clear("radio_pack", "\t\t type: %hhu \n ", message->msg_type);
+		 		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message->msg_counter);
+		 		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message->value);
+	  			
+	  			
+	  		}
 	  }
  }        
 
@@ -74,26 +84,34 @@ module sendAckC {
   	 * When the reading is done it raise the event read one.
   	 */
 	call Read.read();
+
+	
   }
 
   //***************** Boot interface ********************//
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
 	call SplitControl.start();
-	if(TOS_NODE_ID==1){
-		call MilliTimer.startPeriodic(1000);
-		dbg("boot""started timer  at 1 Hz on mote 1\n");
-	}
+//	if(TOS_NODE_ID==1){
+//		call MilliTimer.startPeriodic(1000);
+//		dbg("boot","started timer  at 1 Hz on mote 1\n");
+//	}
 	/* Fill it ... */
   }
 
   //***************** SplitControl interface ********************//
   event void SplitControl.startDone(error_t err){
  	if (err == SUCCESS) {
- 		dbg("radio","radio on"
+ 		dbg("radio","radio on\n");
 		if(TOS_NODE_ID==1){
+			rec_id=2;
+			dbg("boot","this is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
 			call MilliTimer.startPeriodic(1000);
-			dbg("boot""started timer  at 1 Hz on mote 1\n");
+			dbg("boot","started timer  at 1 Hz on mote 1\n");
+		}
+		else{
+		rec_id=1;
+		dbg("boot","this is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
 		}
     }
     else {
@@ -128,6 +146,25 @@ module sendAckC {
 	 * 2b. Otherwise, send again the request
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 if(&packet == buf && err == SUCCESS){
+	 	dbg("radio_send","packet was sent successfully");
+	 	dbg_clear("radio_send", " at time %s \n", sim_time_string());
+	 }
+	 else{
+	 dbgerror("radio_send","Problem occurred while sending packet\n");
+	 }
+	 if (call PackAck.wasAcked(&packet)==TRUE){
+		dbg("radio_ack","packet was acknowledged\n");
+		call MilliTimer.stop();
+		dbg("boot","timer was stopped\n");
+	  				
+	}
+	else{
+		dbg("radio_ack","Packet was not acknowledged!!!\n");
+		dbgerror("radio_ack","packet not acknowledged, timer was not stopped\nS");
+		dbg("radio_ack","Another packet will be sent in 1 second\n");
+		
+	}
   }
 
   //***************************** Receive interface *****************//
@@ -140,6 +177,28 @@ module sendAckC {
 	 * 3. If a request is received, send the response
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 if(len!=sizeof(my_msg_t)){
+	 	dbgerror("radio","received packet with unexpected length\n");
+	 	return buf;
+	 }
+	 else{
+	 	my_msg_t* message=(my_msg_t*)payload;
+	 	dbg("radio_rec", "Received packet at time %s\n", sim_time_string());
+      	dbg("radio_pack"," Payload length %hhu \n", call Packet.payloadLength(buf));
+      	dbg("radio_pack", ">>>Packet content: \n");
+      	dbg_clear("radio_pack","\t\t Payload Received\n" );
+      	dbg_clear("radio_pack", "\t\t type: %hhu \n ", message->msg_type);
+ 		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message->msg_counter);
+ 		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message->value);
+ 		if(message->msg_type==REQ){
+ 			dbg("radio_rec","received REQ message, reading sensr\n");
+ 			counter=message->msg_counter;
+			call Packet.clear(payload);
+ 			sendResp();
+
+ 		}
+	 	return message;
+	 }
 
   }
   
@@ -151,7 +210,15 @@ module sendAckC {
 	 * 1. Prepare the response (RESP)
 	 * 2. Send back (with a unicast message) the response
 	 * X. Use debug statement showing what's happening (i.e. message fields)
-	 */
+	 */ 
+	 if(result==SUCCESS){
+	 		dbg("radio_rec","Sensor read correctly, preparing response\n");}
+ 		else{
+ 			dbgerror("radio_rec","trouble reading sensor\n");
+ 			return;}
+//		 my_msg_t* message=(my_msg_t*)(call Packet.getPayload(&packet, sizeof(my_msg_t)));
+
+
+	}
 
 }
-
