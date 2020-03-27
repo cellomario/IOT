@@ -63,8 +63,13 @@ module sendAckC {
 	  dbg("radio_send","message assembled ready to be transmitted\n");
 	  if(call PackAck.requestAck(&packet)==SUCCESS){
 	  	dbg("radio_send","enabled acknowledgement for transmission\n");
-	  		if (call AMSend.send(0, &packet,sizeof(my_msg_t))==SUCCESS){
-	  			dbg("radio_send","packet sent successfyully\n");
+	  		if (call AMSend.send(2, &packet,sizeof(my_msg_t))==SUCCESS){
+				dbg("radio_send", "Packet passed to lower layer successfully!\n");
+	     		dbg("radio_pack","Packet Sent!\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+	     		dbg_clear("radio_pack","\t Payload Sent\n" );
+		 		dbg_clear("radio_pack", "\t\t type: %hhu \n ", message->msg_type);
+		 		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message->msg_counter);
+		 		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message->value);
 	  			
 	  			
 	  		}
@@ -85,17 +90,17 @@ module sendAckC {
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
 	call SplitControl.start();
-	if(TOS_NODE_ID==1){
-		call MilliTimer.startPeriodic(1000);
-		dbg("boot","started timer  at 1 Hz on mote 1\n");
-	}
+//	if(TOS_NODE_ID==1){
+//		call MilliTimer.startPeriodic(1000);
+//		dbg("boot","started timer  at 1 Hz on mote 1\n");
+//	}
 	/* Fill it ... */
   }
 
   //***************** SplitControl interface ********************//
   event void SplitControl.startDone(error_t err){
  	if (err == SUCCESS) {
- 		dbg("radio","radio on");
+ 		dbg("radio","radio on\n");
 		if(TOS_NODE_ID==1){
 			call MilliTimer.startPeriodic(1000);
 			dbg("boot","started timer  at 1 Hz on mote 1\n");
@@ -133,11 +138,24 @@ module sendAckC {
 	 * 2b. Otherwise, send again the request
 	 * X. Use debug statements showing what's happening (i.e. message fields)
 	 */
+	 if(&packet == buf && err == SUCCESS){
+	 	dbg("radio_send","packet was sent successfully");
+	 	dbg_clear("radio_send", " at time %s \n", sim_time_string());
+	 }
+	 else{
+	 dbgerror("radio_send","Problem occurred while sending packet\n");
+	 }
 	 if (call PackAck.wasAcked(&packet)==TRUE){
-		dbg("radio_ack","packet was acknowledged");
+		dbg("radio_ack","packet was acknowledged\n");
 		call MilliTimer.stop();
 		dbg("boot","timer was stopped");
 	  				
+	}
+	else{
+		dbg("radio_ack","Packet was not acknowledged!!!\n");
+		dbgerror("radio_ack","packet not acknowledged, timer was not stopped");
+		dbg("radio_ack","\nAnother packet will be sent in 1 second\n");
+		
 	}
   }
 
