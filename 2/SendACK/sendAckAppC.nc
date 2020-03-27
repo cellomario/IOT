@@ -20,6 +20,7 @@ implementation {
   components new TimerMilliC();
   components ActiveMessageC; /*Contains Packet, PacketAcknowledgments and SplitControl*/
   components new FakeSensorC(); /*This component is defined in the same folder, not to be modified*/
+  //components PacketAcknowledgements as PackAck;
 
 /****** INTERFACES *****/
   //Boot interface
@@ -35,12 +36,7 @@ implementation {
 
   //Interfaces to access package fields
   App.Packet -> AMSenderC;
-<<<<<<< HEAD
-  App.PacketAcknowledgements -> ActiveMessageC;
-=======
   App.PackAck -> AMSenderC;
-
->>>>>>> 400a627d258f6f9188e5ea1ae3e84eb26bf083f3
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;
@@ -49,4 +45,3 @@ implementation {
   App.Read -> FakeSensorC;
 
 }
-
