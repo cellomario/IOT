@@ -63,8 +63,8 @@ module sendAckC {
 	  dbg("radio_send","message assembled ready to be transmitted\n");
 	  if(call PackAck.requestAck(&packet)==SUCCESS){
 	  	dbg("radio_send","enabled acknowledgement for transmission\n");
-	  		if (call AMSend.send(2, &packet,sizeof(my_msg_t))==SUCCESS){
-				dbg("radio_send", "Packet passed to lower layer successfully!\n");
+	  		if (call AMSend.send(rec_id, &packet,sizeof(my_msg_t))==SUCCESS){
+				dbg("radio_send", "Packet with destination node %d passed to lower layer successfully!\n",rec_id);
 	     		dbg("radio_pack","Packet Sent!\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
 	     		dbg_clear("radio_pack","\t Payload Sent\n" );
 		 		dbg_clear("radio_pack", "\t\t type: %hhu \n ", message->msg_type);
@@ -102,8 +102,14 @@ module sendAckC {
  	if (err == SUCCESS) {
  		dbg("radio","radio on\n");
 		if(TOS_NODE_ID==1){
+			rec_id=2;
+			dbg("boot","this is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
 			call MilliTimer.startPeriodic(1000);
 			dbg("boot","started timer  at 1 Hz on mote 1\n");
+		}
+		else{
+		rec_id=1;
+		dbg("boot","this is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
 		}
     }
     else {
@@ -153,8 +159,8 @@ module sendAckC {
 	}
 	else{
 		dbg("radio_ack","Packet was not acknowledged!!!\n");
-		dbgerror("radio_ack","packet not acknowledged, timer was not stopped");
-		dbg("radio_ack","\nAnother packet will be sent in 1 second\n");
+		dbgerror("radio_ack","packet not acknowledged, timer was not stopped\nS");
+		dbg("radio_ack","Another packet will be sent in 1 second\n");
 		
 	}
   }
