@@ -1,5 +1,11 @@
-/**
- *  @author Luca Pietro Borsani
+/** This file contains the header for 
+ *  the second hands-on activity of the
+ *  course of Internet of Things, 2019/20
+ *  developed by Giulio Mario Martena and
+ *  Marcello Cellina, MSc's in Automation
+ *  and Control Engineering.
+ *  
+ *  @template by Luca Pietro Borsani
  */
 
 #ifndef SENDACK_H

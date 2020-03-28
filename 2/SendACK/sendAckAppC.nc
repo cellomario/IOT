@@ -1,6 +1,8 @@
 /**
- *  Configuration file for wiring of sendAckC module to other common 
- *  components needed for proper functioning
+ *  Configuration file for the second hands-on activity of the
+ *  course of Internet of Things 2019/20; code developed by
+ *  Marcello Cellina and Giulio Mario Martena, based on previously
+ *  provided template.
  *
  *  @author Luca Pietro Borsani
  */
@@ -20,7 +22,6 @@ implementation {
   components new TimerMilliC();
   components ActiveMessageC; /*Contains Packet, PacketAcknowledgments and SplitControl*/
   components new FakeSensorC(); /*This component is defined in the same folder, not to be modified*/
-  //components PacketAcknowledgements as PackAck;
 
 /****** INTERFACES *****/
   //Boot interface
