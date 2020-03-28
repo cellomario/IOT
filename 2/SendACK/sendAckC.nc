@@ -103,21 +103,21 @@ implementation {
      	//We have successfully turned on the radio. Now Mote #1 will start sending requests to Mote #2, which
      	//in turns doesn't do anything right now as it waits until it receives a request.
 
-            dbg("radio", "radio on\n");
+            dbg("radio", "Radio on\n");
 		    if(TOS_NODE_ID == 1) {
 
 		    //Set Mote #1 to send messages to Mote #2 and starts the timer at which requests will be sent.
 			    rec_id=2;
-			    dbg("boot","this is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
+			    dbg("boot","This is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
 			    call MilliTimer.startPeriodic(1000);
-			    dbg("boot","started timer  at 1 Hz on mote 1\n");
+			    dbg("boot","Started timer  at 1 Hz on mote 1\n");
 
 		    }
 		    else {
 
 		    //Set Mote #2 to send messages to Mote #1 (assuming there is no Mote #3)
 		    rec_id=1;
-		    dbg("boot","this is node %d that will send messages to node %d\n", TOS_NODE_ID, rec_id);
+		    dbg("boot","This is node %d that will send messages to node %d\n", TOS_NODE_ID, rec_id);
 	    
 		    }
         }
@@ -171,12 +171,12 @@ implementation {
         // is done exclusively on the sender side, as from the receiver side there is no need
         // to implement anything as the acknowledgements are taken care of inside the transmission protocol.
         if (call PackAck.wasAcked(&packet) == TRUE) {
-            dbg("radio_ack","packet was acknowledged\n");
+            dbg("radio_ack","Packet was acknowledged\n");
             if(TOS_NODE_ID==1) {
                 // Once Mote #1 sends a packet that is acknowledged, it must send no more.
     			// The simplest way to do that is just to stop the timer
     			call MilliTimer.stop();
-    			dbg("boot","timer was stopped\n");
+    			dbg("boot","Timer was stopped\n");
     	  	}
     	  	else { //when Mote #2 sends packet to Mote #1 and it was acknowledged, it has finished its job
 	  		    return;
@@ -184,7 +184,7 @@ implementation {
 	    }
 	    else {
 		    dbg("radio_ack","Packet was not acknowledged!!!\n");
-		    dbgerror("radio_ack","packet not acknowledged, timer was not stopped\nS");
+		    dbgerror("radio_ack","Packet not acknowledged, timer was not stopped\n");
 		    //If packet is not acknowledged since mote 2 still has to boot, ti will just send another one
 		    //next time the timer is fired.
 		    dbg("radio_send","Another packet will be sent in 1 second\n");
@@ -220,7 +220,7 @@ implementation {
      		if(message -> msg_type == REQ) {
 
                 // If we have received a request, now it is time to act for mote 2 and to send a RESP
-                dbg("radio_rec","received REQ message, reading sensor\n");
+                dbg("radio_rec","Received REQ message, reading sensor\n");
                 counter=message->msg_counter; //now this saves the counter received from Mote #1 into the counter of Mote #2.
                 // this is done to save memory as the counter in Mote #2 is never used as the timer is never fired.
 
