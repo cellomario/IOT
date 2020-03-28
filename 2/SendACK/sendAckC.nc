@@ -80,7 +80,12 @@ implementation {
                 dbg("radio_send", "Packet with destination node %d passed to lower layer successfully!\n", rec_id);
                 dbg("radio_pack","Packet Sent!\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
                 dbg_clear("radio_pack", "\t Payload Sent\n");
-                dbg_clear("radio_pack", "\t\t type: %hhu \n ", message -> msg_type);
+                if(message -> msg_type == REQ) {
+                	dbg_clear("radio_pack", "\t\t type: REQ \n");
+                } else {
+                	dbg_clear("radio_pack", "\t\t type: RESP \n");
+                }
+                //dbg_clear("radio_pack", "\t\t type: %hhu \n ", message -> msg_type);
                 dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message -> msg_counter);
                 dbg_clear("radio_pack", "\t\t value: %hhu \n ", message -> value);
 	  		}
@@ -214,7 +219,11 @@ implementation {
           	dbg("radio_pack"," Payload length %hhu \n", call Packet.payloadLength(buf));
           	dbg("radio_pack", ">>>Packet content: \n");
           	dbg_clear("radio_pack","\t\t Payload Received\n" );
-          	dbg_clear("radio_pack", "\t\t type: %hhu \n ", message -> msg_type);
+          	if(message -> msg_type == REQ) {
+               	dbg_clear("radio_pack", "\t\t type: REQ \n");
+            } else {
+               	dbg_clear("radio_pack", "\t\t type: RESP \n");
+            }
      		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message -> msg_counter);
      		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message -> value);
      		if(message -> msg_type == REQ) {
@@ -278,7 +287,11 @@ implementation {
 			    dbg("radio_send", "Packet with destination node %d passed to lower layer successfully!\n", rec_id);
          		dbg("radio_pack","Packet Sent!\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
          		dbg_clear("radio_pack","\t Payload Sent\n" );
-	     		dbg_clear("radio_pack", "\t\t type: %hhu \n ", message -> msg_type);
+	     		if(message -> msg_type == REQ) {
+                	dbg_clear("radio_pack", "\t\t type: REQ \n");
+                } else {
+                	dbg_clear("radio_pack", "\t\t type: RESP \n");
+                }
 	     		dbg_clear("radio_pack", "\t\t counter: %hhu \n ", message -> msg_counter);
 	     		dbg_clear("radio_pack", "\t\t value: %hhu \n ", message -> value);
      		}
