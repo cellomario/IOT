@@ -108,16 +108,16 @@ implementation {
 
 		    //Set Mote #1 to send messages to Mote #2 and starts the timer at which requests will be sent.
 			    rec_id=2;
-			    dbg("boot","This is node %d that will send messages to node %d\n",TOS_NODE_ID,rec_id);	
+			    dbg("boot","This is node %d that will send messages to node %d\n", TOS_NODE_ID, rec_id);	
 			    call MilliTimer.startPeriodic(1000);
-			    dbg("boot","Started timer  at 1 Hz on mote 1\n");
+			    dbg("boot", "Started timer at 1 Hz on mote 1\n");
 
 		    }
 		    else {
 
 		    //Set Mote #2 to send messages to Mote #1 (assuming there is no Mote #3)
 		    rec_id=1;
-		    dbg("boot","This is node %d that will send messages to node %d\n", TOS_NODE_ID, rec_id);
+		    dbg("boot", "This is node %d that will send messages to node %d\n", TOS_NODE_ID, rec_id);
 	    
 		    }
         }
@@ -172,7 +172,7 @@ implementation {
         // to implement anything as the acknowledgements are taken care of inside the transmission protocol.
         if (call PackAck.wasAcked(&packet) == TRUE) {
             dbg("radio_ack","Packet was acknowledged\n");
-            if(TOS_NODE_ID==1) {
+            if(TOS_NODE_ID == 1) {
                 // Once Mote #1 sends a packet that is acknowledged, it must send no more.
     			// The simplest way to do that is just to stop the timer
     			call MilliTimer.stop();
