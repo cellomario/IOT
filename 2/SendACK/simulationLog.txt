@@ -1,0 +1,156 @@
+********************************************
+*                                          *
+*             TOSSIM Script                *
+*                                          *
+********************************************
+Initializing mac....
+Initializing radio channels....
+    using topology file: topology.txt
+    using noise file: meyer-heavy.txt
+Initializing simulator....
+Activate debug message on channel init
+Activate debug message on channel boot
+Activate debug message on channel radio
+Activate debug message on channel radio_send
+Activate debug message on channel radio_ack
+Activate debug message on channel radio_rec
+Activate debug message on channel radio_pack
+Activate debug message on channel role
+Creating node 1...
+>>>Will boot at time 0 [sec]
+Creating node 2...
+>>>Will boot at time 5 [sec]
+Creating radio channels...
+>>>Setting radio channel from node  1  to node  2  with gain  -60.0  dBm
+>>>Setting radio channel from node  2  to node  1  with gain  -60.0  dBm
+Initializing Closest Pattern Matching (CPM)...
+Reading noise model data file: meyer-heavy.txt
+Loading:##Done!
+>>>Creating noise model for node: 1
+>>>Creating noise model for node: 2
+Start simulation with TOSSIM! 
+
+
+
+DEBUG (1): Application booted.
+DEBUG (1): Radio on
+DEBUG (1): This is node 1 that will send messages to node 2
+DEBUG (1): Started timer at 1 Hz on mote 1
+DEBUG (1): Incremented counter by 1, counter value 1
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 1 
+ 		 value: 0 
+ DEBUG (1): Packet was sent successfully at time 0:0:0.983550994 
+DEBUG (1): Packet was not acknowledged!!!
+ERROR (1): Packet not acknowledged, timer was not stopped
+DEBUG (1): Another packet will be sent in 1 second
+DEBUG (1): Incremented counter by 1, counter value 2
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 2 
+ 		 value: 0 
+ DEBUG (1): Packet was sent successfully at time 0:0:1.960891688 
+DEBUG (1): Packet was not acknowledged!!!
+ERROR (1): Packet not acknowledged, timer was not stopped
+DEBUG (1): Another packet will be sent in 1 second
+DEBUG (1): Incremented counter by 1, counter value 3
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 3 
+ 		 value: 0 
+ DEBUG (1): Packet was sent successfully at time 0:0:2.935577368 
+DEBUG (1): Packet was not acknowledged!!!
+ERROR (1): Packet not acknowledged, timer was not stopped
+DEBUG (1): Another packet will be sent in 1 second
+DEBUG (1): Incremented counter by 1, counter value 4
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 4 
+ 		 value: 0 
+ DEBUG (1): Packet was sent successfully at time 0:0:3.912246679 
+DEBUG (1): Packet was not acknowledged!!!
+ERROR (1): Packet not acknowledged, timer was not stopped
+DEBUG (1): Another packet will be sent in 1 second
+DEBUG (1): Incremented counter by 1, counter value 5
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 5 
+ 		 value: 0 
+ DEBUG (1): Packet was sent successfully at time 0:0:4.889770477 
+DEBUG (1): Packet was not acknowledged!!!
+ERROR (1): Packet not acknowledged, timer was not stopped
+DEBUG (1): Another packet will be sent in 1 second
+DEBUG (2): Application booted.
+DEBUG (2): Radio on
+DEBUG (2): This is node 2 that will send messages to node 1
+DEBUG (1): Incremented counter by 1, counter value 6
+DEBUG (1): Message assembled ready to be transmitted
+DEBUG (1): Enabled acknowledgement for transmission
+DEBUG (1): Packet with destination node 2 passed to lower layer successfully!
+DEBUG (1): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: REQ 
+		 counter: 6 
+ 		 value: 0 
+ DEBUG (2): Received packet at time 0:0:5.866653409
+DEBUG (2):  Payload length 4 
+DEBUG (2): >>>Packet content: 
+		 Payload Received
+		 type: REQ 
+		 counter: 6 
+ 		 value: 0 
+ DEBUG (2): Received REQ message, reading sensor
+DEBUG (1): Packet was sent successfully at time 0:0:5.866821255 
+DEBUG (1): Packet was acknowledged
+DEBUG (1): Timer was stopped
+DEBUG (2): Sensor read correctly, preparing response
+DEBUG (2): Message assembled ready to be transmitted
+DEBUG (2): Enabled acknowledgement for transmission
+DEBUG (2): Packet with destination node 1 passed to lower layer successfully!
+DEBUG (2): Packet Sent!
+ 	 Payload length 4 
+	 Payload Sent
+		 type: RESP 
+		 counter: 6 
+ 		 value: 245 
+ DEBUG (1): Received packet at time 0:0:5.882278415
+DEBUG (1):  Payload length 4 
+DEBUG (1): >>>Packet content: 
+		 Payload Received
+		 type: RESP 
+		 counter: 6 
+ 		 value: 245 
+ DEBUG (2): Packet was sent successfully at time 0:0:5.882446261 
+DEBUG (2): Packet was acknowledged
+
+
+
+Simulation finished!
+
